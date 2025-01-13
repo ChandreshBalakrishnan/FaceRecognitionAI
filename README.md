@@ -27,3 +27,6 @@ Ensure you have the following dependencies installed:
 Install dependencies using pip:
 ```bash
 pip install mediapipe opencv-python numpy pandas scikit-learn
+```
+## Requirements
+
