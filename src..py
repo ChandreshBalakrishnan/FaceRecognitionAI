@@ -1,5 +1,5 @@
-import mediapipe as mp  # Import mediapipe
-import cv2  # Import OpenCV
+import mediapipe as mp
+import cv2  
 import csv
 import os
 import numpy as np
@@ -11,34 +11,30 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression, RidgeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 
-from sklearn.metrics import accuracy_score # Accuracy metrics 
+from sklearn.metrics import accuracy_score 
 import pickle 
 
-mp_drawing = mp.solutions.drawing_utils  # Drawing helpers
-mp_holistic = mp.solutions.holistic  # Mediapipe holistic solutions
-mp_face_mesh = mp.solutions.face_mesh  # Mediapipe face mesh solutions
+mp_drawing = mp.solutions.drawing_utils  
+mp_holistic = mp.solutions.holistic
+mp_face_mesh = mp.solutions.face_mesh  
 
 cap = cv2.VideoCapture(0)
 
-# Initiate holistic model
 with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
 
-        # Recolor Feed
         image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image.flags.writeable = False        
 
-        # Make Detections
         results = holistic.process(image)
 
-        # Recolor image back to BGR for rendering
+
         image.flags.writeable = True   
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-        # 1. Draw face landmarks
         if results.face_landmarks:
             mp_drawing.draw_landmarks(
                 image, 
@@ -48,7 +44,6 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                 mp_drawing.DrawingSpec(color=(80, 256, 121), thickness=1, circle_radius=1)
             )
 
-        # 2. Draw right hand
         if results.right_hand_landmarks:
             mp_drawing.draw_landmarks(
                 image, 
@@ -58,7 +53,6 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                 mp_drawing.DrawingSpec(color=(80, 44, 121), thickness=2, circle_radius=2)
             )
 
-        # 3. Draw left hand
         if results.left_hand_landmarks:
             mp_drawing.draw_landmarks(
                 image, 
@@ -68,7 +62,6 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                 mp_drawing.DrawingSpec(color=(121, 44, 250), thickness=2, circle_radius=2)
             )
 
-        # 4. Draw pose landmarks
         if results.pose_landmarks:
             mp_drawing.draw_landmarks(
                 image, 
@@ -78,7 +71,6 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                 mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=2, circle_radius=2)
             )
 
-        # Display the output
         cv2.imshow('Raw Webcam Feed', image)
 
         if cv2.waitKey(10) & 0xFF == ord('q'):
@@ -105,66 +97,49 @@ with open('coords.csv', mode='w', newline='') as f:
 class_name = "Dead"
 
 cap = cv2.VideoCapture(0)
-# Initiate holistic model
 with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
     
     while cap.isOpened():
         ret, frame = cap.read()
         
-        # Recolor Feed
         image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image.flags.writeable = False        
         
-        # Make Detections
         results = holistic.process(image)
-        # print(results.face_landmarks)
-        
-        # face_landmarks, pose_landmarks, left_hand_landmarks, right_hand_landmarks
-        
-        # Recolor image back to BGR for rendering
         image.flags.writeable = True   
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         
-        # 1. Draw face landmarks
         mp_drawing.draw_landmarks(image, results.face_landmarks, mp_holistic.FACE_CONNECTIONS, 
                                  mp_drawing.DrawingSpec(color=(80,110,10), thickness=1, circle_radius=1),
                                  mp_drawing.DrawingSpec(color=(80,256,121), thickness=1, circle_radius=1)
                                  )
         
-        # 2. Right hand
         mp_drawing.draw_landmarks(image, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS, 
                                  mp_drawing.DrawingSpec(color=(80,22,10), thickness=2, circle_radius=4),
                                  mp_drawing.DrawingSpec(color=(80,44,121), thickness=2, circle_radius=2)
                                  )
 
-        # 3. Left Hand
         mp_drawing.draw_landmarks(image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS, 
                                  mp_drawing.DrawingSpec(color=(121,22,76), thickness=2, circle_radius=4),
                                  mp_drawing.DrawingSpec(color=(121,44,250), thickness=2, circle_radius=2)
                                  )
 
-        # 4. Pose Detections
         mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS, 
                                  mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=4),
                                  mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2)
                                  )
-        # Export coordinates
         try:
-            # Extract Pose landmarks
             pose = results.pose_landmarks.landmark
             pose_row = list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in pose]).flatten())
             
-            # Extract Face landmarks
             face = results.face_landmarks.landmark
             face_row = list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in face]).flatten())
             
-            # Concate rows
             row = pose_row+face_row
             
-            # Append class name 
             row.insert(0, class_name)
             
-            # Export to CSV
+            # CSV Export
             with open('coords.csv', mode='a', newline='') as f:
                 csv_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                 csv_writer.writerow(row) 
@@ -188,8 +163,8 @@ df.tail()
 
 df[df['class']=='Sad']
 
-X = df.drop('class', axis=1) # features
-y = df['class'] # target value
+X = df.drop('class', axis=1) 
+y = df['class'] 
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1234)
 
@@ -219,10 +194,7 @@ for algo, model in fit_models.items():
 
 fit_models['rf'].predict(X_test)
 
-
-
 y_test
-
 
 with open('body_language.pkl', 'wb') as f:
     pickle.dump(fit_models['rf'], f)
@@ -233,77 +205,52 @@ with open('body_language.pkl', 'rb') as f:
 model
 
 cap = cv2.VideoCapture(0)
-# Initiate holistic model
 with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
     
     while cap.isOpened():
         ret, frame = cap.read()
         
-        # Recolor Feed
         image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image.flags.writeable = False        
         
-        # Make Detections
         results = holistic.process(image)
-        # print(results.face_landmarks)
         
-        # face_landmarks, pose_landmarks, left_hand_landmarks, right_hand_landmarks
-        
-        # Recolor image back to BGR for rendering
         image.flags.writeable = True   
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         
-        # 1. Draw face landmarks
         mp_drawing.draw_landmarks(image, results.face_landmarks, mp_holistic.FACE_CONNECTIONS, 
                                  mp_drawing.DrawingSpec(color=(80,110,10), thickness=1, circle_radius=1),
                                  mp_drawing.DrawingSpec(color=(80,256,121), thickness=1, circle_radius=1)
                                  )
         
-        # 2. Right hand
         mp_drawing.draw_landmarks(image, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS, 
                                  mp_drawing.DrawingSpec(color=(80,22,10), thickness=2, circle_radius=4),
                                  mp_drawing.DrawingSpec(color=(80,44,121), thickness=2, circle_radius=2)
                                  )
 
-        # 3. Left Hand
         mp_drawing.draw_landmarks(image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS, 
                                  mp_drawing.DrawingSpec(color=(121,22,76), thickness=2, circle_radius=4),
                                  mp_drawing.DrawingSpec(color=(121,44,250), thickness=2, circle_radius=2)
                                  )
 
-        # 4. Pose Detections
         mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS, 
                                  mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=4),
                                  mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2)
                                  )
-        # Export coordinates
         try:
-            # Extract Pose landmarks
             pose = results.pose_landmarks.landmark
             pose_row = list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in pose]).flatten())
             
-            # Extract Face landmarks
             face = results.face_landmarks.landmark
             face_row = list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in face]).flatten())
             
-            # Concate rows
             row = pose_row+face_row
-            
-#             # Append class name 
-#             row.insert(0, class_name)
-            
-#             # Export to CSV
-#             with open('coords.csv', mode='a', newline='') as f:
-#                 csv_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-#                 csv_writer.writerow(row) 
 
-            # Make Detections
             X = pd.DataFrame([row])
             body_language_class = model.predict(X)[0]
             body_language_prob = model.predict_proba(X)[0]
             print(body_language_class, body_language_prob)
             
-            # Grab ear coords
             coords = tuple(np.multiply(
                             np.array(
                                 (results.pose_landmarks.landmark[mp_holistic.PoseLandmark.LEFT_EAR].x, 
@@ -317,16 +264,13 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
             cv2.putText(image, body_language_class, coords, 
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
             
-            # Get status box
             cv2.rectangle(image, (0,0), (250, 60), (245, 117, 16), -1)
             
-            # Display Class
             cv2.putText(image, 'CLASS'
                         , (95,12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
             cv2.putText(image, body_language_class.split(' ')[0]
                         , (90,40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
             
-            # Display Probability
             cv2.putText(image, 'PROB'
                         , (15,12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
             cv2.putText(image, str(round(body_language_prob[np.argmax(body_language_prob)],2))
@@ -345,4 +289,3 @@ cv2.destroyAllWindows()
 
 tuple(np.multiply(np.array((results.pose_landmarks.landmark[mp_holistic.PoseLandmark.LEFT_EAR].x, 
 results.pose_landmarks.landmark[mp_holistic.PoseLandmark.LEFT_EAR].y)), [640,480]).astype(int))
-
