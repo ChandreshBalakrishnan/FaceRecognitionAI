@@ -28,5 +28,13 @@ Install dependencies using pip:
 ```bash
 pip install mediapipe opencv-python numpy pandas scikit-learn
 ```
-## Requirements
+## Training the Model
+Record data for different classes using the program.
+Ensure the coords.csv file has sufficient data for each class.
+Split the data into training and testing sets.
+
+## Conclusion
+This project provides a robust framework for recognizing body language using Mediapipe and machine learning. By combining landmark detection with predictive modeling, it offers a practical tool for real-time applications such as gesture recognition, health monitoring, and interactive interfaces.
+
+Future improvements could involve fine-tuning models with larger datasets, integrating advanced deep learning techniques, or expanding the scope to include more complex gestures and actions. With its modular design, this project is a strong foundation for further exploration in human-computer interaction and computer vision.
 
