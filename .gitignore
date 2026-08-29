@@ -1,0 +1,9 @@
+backend/models/
+backend/training_data.jsonl
+backend/model_weights.json
+backend/dwell_history.json
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.DS_Store
