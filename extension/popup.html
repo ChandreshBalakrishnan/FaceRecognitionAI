@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Emotion Scroll</title>
+    <style>
+      :root { color-scheme: light dark; }
+      body {
+        width: 268px; margin: 0; padding: 14px;
+        font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #16161a; color: #e8e8ea;
+      }
+      h1 { margin: 0 0 2px; font-size: 15px; letter-spacing: .2px; }
+      .sub { margin: 0 0 12px; font-size: 11px; color: #8b8b93; }
+      .card { background: #202027; border-radius: 8px; padding: 10px 11px; margin-bottom: 10px; }
+      .row { display: flex; align-items: center; gap: 8px; }
+      .dot { width: 8px; height: 8px; border-radius: 50%; background: #b33; flex: none; }
+      .dot.on { background: #3b3; }
+      .status { font-size: 12px; }
+      .muted { color: #8b8b93; font-size: 11px; margin-top: 4px; }
+      .toggle { display: flex; align-items: center; justify-content: space-between; }
+      label { font-size: 12px; }
+      input[type="range"] { width: 100%; margin: 8px 0 2px; accent-color: #e8734a; }
+      .scale { display: flex; justify-content: space-between; font-size: 10px; color: #8b8b93; }
+      .meter { height: 6px; border-radius: 3px; background: #33333c; overflow: hidden; margin-top: 8px; position: relative; }
+      .fill { height: 100%; width: 0%; background: linear-gradient(90deg,#4a8,#e85); transition: width .15s linear; }
+      .mark { position: absolute; top: -2px; width: 2px; height: 10px; background: #fff; left: 55%; }
+      .bars { display: grid; gap: 3px; margin-top: 8px; }
+      .bar { display: flex; align-items: center; gap: 7px; font-size: 10px; color: #8b8b93; }
+      .bar span { width: 68px; flex: none; }
+      .bar i { flex: 1; height: 4px; border-radius: 2px; background: #33333c; overflow: hidden; }
+      .bar b { display: block; height: 100%; width: 0%; background: #5a9bd8; transition: width .2s linear; }
+      button {
+        width: 100%; padding: 7px; border: 0; border-radius: 6px; cursor: pointer;
+        background: #2f2f38; color: #e8e8ea; font-size: 12px;
+      }
+      button:hover { background: #3a3a45; }
+      switch-box { display: block; }
+      .sw { position: relative; width: 38px; height: 21px; }
+      .sw input { opacity: 0; width: 0; height: 0; }
+      .slider { position: absolute; inset: 0; background: #45454f; border-radius: 21px; transition: .18s; cursor: pointer; }
+      .slider:before { content: ""; position: absolute; height: 15px; width: 15px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .18s; }
+      input:checked + .slider { background: #3b8f5a; }
+      input:checked + .slider:before { transform: translateX(17px); }
+    </style>
+  </head>
+  <body>
+    <h1>Emotion Scroll</h1>
+    <p class="sub">YouTube Shorts · everything stays on this machine</p>
+
+    <div class="card">
+      <div class="row">
+        <span class="dot" id="dot"></span>
+        <span class="status" id="status">Connecting…</span>
+      </div>
+      <div class="muted" id="detail">Start the Python service to connect.</div>
+      <div class="meter"><div class="fill" id="fill"></div><div class="mark" id="mark"></div></div>
+      <div class="bars">
+        <div class="bar"><span>looking away</span><i><b data-k="attention_loss"></b></i></div>
+        <div class="bar"><span>drowsy</span><i><b data-k="drowsiness"></b></i></div>
+        <div class="bar"><span>emotion</span><i><b data-k="emotion"></b></i></div>
+      </div>
+      <div class="muted" id="dwell"></div>
+    </div>
+
+    <div class="card toggle">
+      <label for="enabled">Auto-skip</label>
+      <span class="sw">
+        <input type="checkbox" id="enabled" />
+        <span class="slider"></span>
+      </span>
+    </div>
+
+    <div class="card">
+      <label for="sensitivity">Sensitivity</label>
+      <input type="range" id="sensitivity" min="0" max="100" value="50" />
+      <div class="scale"><span>patient</span><span>twitchy</span></div>
+    </div>
+
+    <button id="reconnect">Reconnect to service</button>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

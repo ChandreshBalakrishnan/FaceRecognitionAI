@@ -1,0 +1,90 @@
+{
+  "camera_index": 0,
+  "target_fps": 12,
+  "frame_width": 640,
+  "show_preview": true,
+  "mirror_preview": true,
+  "host": "127.0.0.1",
+  "port": 8765,
+  "use_emotion": true,
+  "smoothing_alpha": 0.3,
+  "enter_threshold": 0.55,
+  "hold_seconds": 1.2,
+  "cooldown_seconds": 4.0,
+  "grace_seconds": 1.5,
+  "no_face_reset_seconds": 0.8,
+  "fusion_gains": {
+    "attention": 0.85,
+    "drowsiness": 0.55,
+    "emotion": 0.85
+  },
+  "negative_weights": {
+    "anger": 1.0,
+    "disgust": 1.0,
+    "sadness": 0.8,
+    "contempt": 0.7,
+    "fear": 0.35
+  },
+  "positive_weights": {
+    "happiness": 1.0,
+    "surprise": 0.35
+  },
+  "engagement": {
+    "attention_window_seconds": 6.0,
+    "presence_window_seconds": 8.0,
+    "absent_after_seconds": 4.0,
+    "perclos_window_seconds": 30.0,
+    "blink_window_seconds": 60.0,
+    "min_blink_history_seconds": 20.0,
+    "screen_cone_x_degrees": 26.0,
+    "screen_cone_y_degrees": 22.0,
+    "gaze_degrees_per_unit": 20.0,
+    "pose_smoothing_alpha": 0.35,
+    "cone_exit_multiplier": 1.35,
+    "cone_margin": 1.3,
+    "eye_closed_below": 0.35,
+    "eye_open_above": 0.55,
+    "blink_dip_fraction": 0.18,
+    "min_blink_gap_seconds": 0.12,
+    "perclos_below": 0.25,
+    "perclos_high": 0.2,
+    "blink_rate_excess": 18.0,
+    "mar_full_open": 0.5,
+    "yawn_jaw_above": 0.5,
+    "yawn_seconds": 1.4,
+    "yawn_hold_seconds": 6.0,
+    "w_blink_rate": 0.5,
+    "w_perclos": 0.7,
+    "w_yawn": 0.6
+  },
+  "dwell": {
+    "max_samples": 60,
+    "min_sample_seconds": 0.7,
+    "max_sample_seconds": 180.0,
+    "default_median_seconds": 8.0,
+    "min_samples_to_trust": 5,
+    "gate_fraction_of_median": 0.5,
+    "gate_floor_seconds": 3.0,
+    "gate_ceiling_seconds": 20.0,
+    "relief_span_medians": 1.5,
+    "max_relief": 0.15
+  },
+  "calibration": {
+    "baseline_negative": 0.0,
+    "yaw_center": 0.0,
+    "pitch_center": 0.0,
+    "gaze_x_center": 0.0,
+    "gaze_y_center": 0.0,
+    "cone_x_degrees": null,
+    "cone_y_degrees": null,
+    "blink_rate_baseline": 18.0,
+    "calibrated_at": null,
+    "ear_open": 0.3,
+    "ear_closed": 0.12
+  },
+  "learning": {
+    "record": true,
+    "bored_below_median_fraction": 0.6,
+    "engaged_above_median_fraction": 1.5
+  }
+}

@@ -1,0 +1,12 @@
+# opencv-contrib-python, NOT opencv-python: this project needs cv2.face (the LBF
+# landmark fitter), which only ships in the contrib build. Having both installed
+# breaks in confusing ways - if you previously installed opencv-python, run
+#   pip uninstall -y opencv-python opencv-python-headless
+# first.
+#
+# Pinned below 5.0 because OpenCV 5 dropped the bundled Haar cascade data files
+# that this project uses as a face-detector fallback.
+numpy>=1.24
+opencv-contrib-python>=4.8,<5
+onnxruntime>=1.16
+websockets>=12.0
